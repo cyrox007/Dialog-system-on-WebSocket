@@ -2,18 +2,6 @@
 class Main {
     public $users;
 
-    public function get($get_user) {
-        $this->users = array(1, 2, 3);
-        $new = array();
-        foreach ($this->users as $key => $value) {
-            if ($value == $get_user) {
-                continue;
-            }
-            $new[$key] = $value;
-        }
-        return $new;
-    }
-
     public function conn_db() {
         return new SQLite3("test.db");
     }
