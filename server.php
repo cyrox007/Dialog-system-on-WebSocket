@@ -4,7 +4,6 @@ use Workerman\Worker;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a Websocket server
 $ws_worker = new Worker('websocket://0.0.0.0:2346');
 
 function conn_db() {
@@ -39,7 +38,6 @@ function get_msg($db, $user_id) {
     return $msgArray;
 }
 
-// Emitted when new connection come
 $ws_worker->onConnect = function ($connection) use($connections) {
     $connection->onWebSocketConnect = function($connection) use($connections) {
         $user_id = $_GET["user_id"];
@@ -71,7 +69,6 @@ $ws_worker->onConnect = function ($connection) use($connections) {
     };
 };
 
-// Emitted when data received
 $ws_worker->onMessage = function ($connection, $data) use (&$connections) {
     $msgData = json_decode($data, true);
     $db = conn_db();
@@ -101,10 +98,8 @@ $ws_worker->onMessage = function ($connection, $data) use (&$connections) {
     $db->close();
 };
 
-// Emitted when connection closed
 $ws_worker->onClose = function ($connection) {
     echo "Connection closed\n";
 };
 
-// Run worker
 Worker::runAll();
