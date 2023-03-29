@@ -27,7 +27,7 @@ function get_msg($db, $user_id) {
     foreach ($result as $dbrow) {
         $d_id = $dbrow["dialog_id"];
         
-        $sql2 = "SELECT * FROM messages WHERE dialog_id = '{$d_id}'";
+        $sql2 = "SELECT * FROM messages WHERE dialog_id = '{$d_id}'"; // ->N+1
         $raw2 = $db->query($sql2);
 
         while($row2 = $raw2->fetchArray()) {
@@ -40,10 +40,11 @@ function get_msg($db, $user_id) {
 
 $ws_worker->onConnect = function ($connection) use($connections) {
     $connection->onWebSocketConnect = function($connection) use($connections) {
+        // SQLInjection begin code
         $user_id = $_GET["user_id"];
         $db = conn_db();
-        
         $msgArray = get_msg($db, $user_id);
+        // SQLInjection end code
 
         $connection->id = $user_id;
         $connection->dialoges = $msgArray;
